@@ -43,9 +43,9 @@ app.get('/user', (req, res) => {
 
 
 app.post('/user/save', (req, res) => {
-    const name = req.body.name
-    const lastName = req.body.lastName
-    const cellNumber = req.body.number
+    const name = req.body.name || 'teste'
+    const lastName = req.body.lastName || 'messi'
+    const cellNumber = req.body.number || '00000-11111'
     console.log('e')
     const query = `INSERT INTO users (name, lastName, number) VALUES ('${name}', '${lastName}', '${cellNumber}')`
 
@@ -58,9 +58,17 @@ app.post('/user/save', (req, res) => {
     })
 })
 
+app.post('/user/delete', (req, res) => {
+    const id = req.body.id
+    if (!id) {
+        console.log('not found')
+        return res.status(404).json({ err: "" })
+    }
+})
 
 
 
+dadada
 
 
 
