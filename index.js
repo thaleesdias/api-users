@@ -1,5 +1,5 @@
 
-import express from 'express'
+import express, { query } from 'express'
 import db from './src/db/connection.js'
 
 const app = express()
@@ -37,8 +37,6 @@ app.get('/user', (req, res) => {
         }
         return res.status(200).json(results)
     })
-
-    return res.status(200)
 })
 
 
@@ -54,21 +52,31 @@ app.post('/user/save', (req, res) => {
             console.log(err)
             return res.status(500).json({ error: 'vish' })
         }
-        return res.status(201).json(results)
+        return res.status(201).send("usuario cadastrado!")
     })
 })
 
-app.post('/user/delete', (req, res) => {
+app.delete('/user/delete', (req, res) => {
     const id = req.body.id
     if (!id) {
         console.log('not found')
-        return res.status(404).json({ err: "" })
+        return res.status(404).json({ err: "sem id" })
     }
+
+    const query = `DELETE FROM users WHERE id="${id}"`
+
+    db.query(query,  (err, results)=>{
+        if(err){
+            console.log("F")
+            return res.status(400).json({"erro":"erro na query"})
+        }
+        return res.status(200).json({status:"okay"})
+    })
 })
 
 
 
-dadada
+
 
 
 
