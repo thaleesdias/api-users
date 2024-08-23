@@ -70,7 +70,9 @@ router.delete('/user/delete', (req, res) => {
     })
 })
 
-
+router.put('/users/edit/:id', (req,res)=>{
+    
+})
 
 
 export default router;
