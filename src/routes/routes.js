@@ -71,7 +71,7 @@ router.delete('/user/delete', (req, res) => {
 })
 
 router.put('/users/edit/:id', (req,res)=>{
-    
+    const id = req.body.id
 })
 
 
