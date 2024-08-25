@@ -24,9 +24,9 @@ router.get('/user', (req, res) => {
         return res.status(400).json({ error: "ID is required" });
     }
 
-    const query = `SELECT * FROM users WHERE id=${id}`
+    const query = "SELECT * FROM users WHERE id=?"
 
-    db.query(query, (err, results) => {
+    db.query(query,[id], (err, results) => {
         if (err) {
             console.log(err)
             return res.status(404)
@@ -41,9 +41,9 @@ router.post('/user/save', (req, res) => {
     const lastName = req.body.lastName || 'messi'
     const cellNumber = req.body.number || '00000-11111'
     console.log('e')
-    const query = `INSERT INTO users (name, lastName, number) VALUES ('${name}', '${lastName}', '${cellNumber}')`
+    const query = `INSERT INTO users (name, lastName, number) VALUES (?,?,?)`
 
-    db.query(query, (err, results) => {
+    db.query(query,[name,lastName,cellNumber], (err, results) => {
         if (err) {
             console.log(err)
             return res.status(500).json({ error: 'vish' })
@@ -59,9 +59,9 @@ router.delete('/user/delete', (req, res) => {
         return res.status(404).json({ err: "sem id" })
     }
 
-    const query = `DELETE FROM users WHERE id="${id}"`
+    const query = "DELETE FROM users WHERE id=?"
 
-    db.query(query,  (err, results)=>{
+    db.query(query, [id],  (err, results)=>{
         if(err){
             console.log("F")
             return res.status(400).json({"erro":"erro na query"})
