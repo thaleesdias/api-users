@@ -70,9 +70,30 @@ router.delete('/user/delete', (req, res) => {
     })
 })
 
-router.put('/users/edit/:id', (req,res)=>{
+router.patch('/user/edit', (req,res)=>{
     const id = req.body.id
-})
+    const update = req.body
+
+
+    if(!id){
+        console.log('usuario não encontrado')
+        return res.status(404).end()
+    }
+
+    const query = "UPDATE users SET ? WHERE id= ?"
+
+    db.query(query,[update,id],(err,results)=>{
+        if(err){
+            console.log('deu ruim')
+            return res.status(400).json({msg:'erro'})
+        }
+
+       
+        return res.status(200).send({msg:' alterado '})    
+    })
+    })
+
+
 
 
 export default router;
