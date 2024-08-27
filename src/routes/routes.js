@@ -26,7 +26,7 @@ router.get('/user', (req, res) => {
 
     const query = "SELECT * FROM users WHERE id=?"
 
-    db.query(query, (err, results) => {
+    db.query(query, [id], (err, results) => {
         if (err) {
             return res.status(404).send({ msg: 'falha ao listar usuarios' })
         }
@@ -40,14 +40,13 @@ router.post('/user/save', (req, res) => {
     const name = req.body.name || 'teste'
     const lastName = req.body.lastName || 'teste 2'
     const cellNumber = req.body.number || '00000-11111'
-    console.log('e')
-    const query = `INSERT INTO users (name, lastName, number) VALUES ('${name}', '${lastName}', '${cellNumber}')`
 
-    db.query(query, (err, results) => {
+    const query = `INSERT INTO users (name, lastName, number) VALUES (?,?,?)`
+
+    db.query(query, [name, lastName, cellNumber], (err, results) => {
         if (err) {
             return res.status(500).json({ msg: 'falha ao cadastrar usuario' })
         }
-
         return res.status(201).send({msg:"usuario cadastrado!"})
     })
 })
@@ -62,19 +61,37 @@ router.delete('/user/delete', (req, res) => {
 
     const query = "DELETE FROM users WHERE id=?"
 
-    db.query(query,  (err, results)=>{
-        if(err){
-            console.log("F")
-            return res.status(400).json({"erro":"erro na query"})
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            return res.status(400).json({ msg: "falha em deletar usuario" })
         }
 
         return res.status(200).json({ msg: "usuario deletado" })
     })
 })
 
-router.put('/users/edit/:id', (req,res)=>{
+router.patch('/user/edit', (req, res) => {
     const id = req.body.id
+    const update = req.body
+
+    if (!id) {
+
+        return res.status(404).send({ msg: 'usuario não encontrado' })
+    }
+
+    const query = "UPDATE users SET ? WHERE id= ?"
+
+    db.query(query, [update, id], (err, results) => {
+        if (err) {
+
+            return res.status(400).json({ msg: 'erro em alterar dados' })
+        }
+
+        return res.status(200).send({ msg: 'dados alterados ' })
+    })
 })
+
+
 
 
 export default router;
