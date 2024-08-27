@@ -5,32 +5,32 @@ const router = Router()
 
 router.get('/users', (req, res) => {
     const query = "SELECT * FROM users;"
+
     db.query(query, (err, results) => {
         if (err) {
-            console.log(err)
-            res.status(500).send('erro ao buscar dados')
+            res.status(404).send('erro ao buscar dados')
             return
         }
-        res.json(results)
+
+        res.status(200).json(results)
 
     })
 })
 
 router.get('/user', (req, res) => {
-
     const id = req.body.id
-    console.log(id)
+    
     if (!id) {
-        return res.status(400).json({ error: "ID is required" });
+        return res.status(404).json({ msg: "ID nao encontrado" });
     }
 
     const query = "SELECT * FROM users WHERE id=?"
 
-    db.query(query,[id], (err, results) => {
+    db.query(query, [id], (err, results) => {
         if (err) {
-            console.log(err)
-            return res.status(404)
+            return res.status(404).send({ msg: 'falha ao listar usuarios' })
         }
+
         return res.status(200).json(results)
     })
 })
@@ -38,60 +38,59 @@ router.get('/user', (req, res) => {
 
 router.post('/user/save', (req, res) => {
     const name = req.body.name || 'teste'
-    const lastName = req.body.lastName || 'messi'
+    const lastName = req.body.lastName || 'teste 2'
     const cellNumber = req.body.number || '00000-11111'
-    console.log('e')
+
     const query = `INSERT INTO users (name, lastName, number) VALUES (?,?,?)`
 
-    db.query(query,[name,lastName,cellNumber], (err, results) => {
+    db.query(query, [name, lastName, cellNumber], (err, results) => {
         if (err) {
-            console.log(err)
-            return res.status(500).json({ error: 'vish' })
+            return res.status(500).json({ msg: 'falha ao cadastrar usuario' })
         }
-        return res.status(201).send("usuario cadastrado!")
+
+        return res.status(201).send({msg:"usuario cadastrado!"})
     })
 })
 
 router.delete('/user/delete', (req, res) => {
     const id = req.body.id
+
     if (!id) {
-        console.log('not found')
-        return res.status(404).json({ err: "sem id" })
+
+        return res.status(404).json({ msg: 'usuario nao encontrado' })
     }
 
     const query = "DELETE FROM users WHERE id=?"
 
-    db.query(query, [id],  (err, results)=>{
-        if(err){
-            console.log("F")
-            return res.status(400).json({"erro":"erro na query"})
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            return res.status(400).json({ msg: "falha em deletar usuario" })
         }
-        return res.status(200).json({status:"okay"})
+
+        return res.status(200).json({ msg: "usuario deletado" })
     })
 })
 
-router.patch('/user/edit', (req,res)=>{
+router.patch('/user/edit', (req, res) => {
     const id = req.body.id
     const update = req.body
 
+    if (!id) {
 
-    if(!id){
-        console.log('usuario não encontrado')
-        return res.status(404).end()
+        return res.status(404).send({ msg: 'usuario não encontrado' })
     }
 
     const query = "UPDATE users SET ? WHERE id= ?"
 
-    db.query(query,[update,id],(err,results)=>{
-        if(err){
-            console.log('deu ruim')
-            return res.status(400).json({msg:'erro'})
+    db.query(query, [update, id], (err, results) => {
+        if (err) {
+
+            return res.status(400).json({ msg: 'erro em alterar dados' })
         }
 
-       
-        return res.status(200).send({msg:' alterado '})    
+        return res.status(200).send({ msg: 'dados alterados ' })
     })
-    })
+})
 
 
 
